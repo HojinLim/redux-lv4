@@ -1,14 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import EveryButton from "../components/EveryButton";
 import { removeTodo } from "../redux/modules/todoSlice";
 import { useDispatch, useSelector } from "react-redux";
+import PasswordInput from "../components/PasswordInput";
 
 const List = () => {
   const todos = useSelector((state) => state.todo);
-  const dispatch = useDispatch();
 
-  
- 
   return (
     <>
       <EveryButton />
@@ -18,7 +16,11 @@ const List = () => {
           <p>id: {todo.id}</p>
           <p>작성자: {todo.writer}</p>
           <p>내용: {todo.contents}</p>
-          <button onClick={()=>{dispatch(removeTodo(todo.id))}}>삭제</button>
+          <div>
+            <PasswordInput todo={todo} />
+            <br />
+            <br />
+          </div>
         </div>
       ))}
     </>
