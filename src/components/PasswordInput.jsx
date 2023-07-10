@@ -1,6 +1,8 @@
 import React, { Children, useState } from "react";
 import { useDispatch } from "react-redux";
 import { editTodo, removeTodo } from "../redux/modules/todoSlice";
+import axios from "axios";
+import { Button, TextField } from "@mui/material";
 
 const PasswordInput = ({ todo }) => {
   const [password, setPassword] = useState("");
@@ -24,26 +26,35 @@ const PasswordInput = ({ todo }) => {
   };
 
   const handleEditTodo = () => {
-    dispatch(
-      editTodo({
-        id: todo.id,
-        writer: todo.writer,
-        title: title,
-        contents: contents,
-        password: todo.password,
-      })
-    );
+    // dispatch(
+    //   editTodo({
+    //     id: todo.id,
+    //     writer: todo.writer,
+    //     title: title,
+    //     contents: contents,
+    //     password: todo.password,
+    //   })
+    // );
+
+    axios.patch(`http://localhost:3001/todos/${todo.id}`, {
+      id: todo.id,
+      writer: todo.writer,
+      title: title,
+      contents: contents,
+      password: todo.password,
+    });
   };
   const handleRemoveTodo = () => {
     if (window.confirm("삭제하시겠습니까?")) {
-      dispatch(removeTodo(todo.id));
+      // dispatch(removeTodo(todo.id));
+      axios.delete(`http://localhost:3001/todos/${todo.id}`);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    handlePasswordSubmit(todo);
+    handlePasswordSubmit();
     setPassword("");
   };
 
@@ -51,28 +62,50 @@ const PasswordInput = ({ todo }) => {
     <>
       {!editMode && (
         <div>
-          <input
+          <TextField
+            id="outlined-basic"
             placeholder="비밀번호"
+            variant="outlined"
             type="password"
+            label="비밀번호"
             value={password}
             onChange={handlePasswordChange}
           />
-          <button onClick={handlePasswordSubmit}>확인</button>
+
+          <Button
+            onClick={handleSubmit}
+            type="submit"
+            variant="contained"
+            color="success"
+          >
+            확인
+          </Button>
         </div>
       )}
       {editMode && (
         <div>
-          <button onClick={handleRemoveTodo}>삭제</button>
-          <button onClick={handleEditTodo}>수정</button>
-          <input
+          <Button type="submit" variant="contained" onClick={handleRemoveTodo}>
+            삭제
+          </Button>
+          <Button type="submit" variant="contained" onClick={handleEditTodo}>
+            수정
+          </Button>
+          <br />
+
+          <br />
+          <TextField
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="제목"
+            variant="outlined"
+            label="제목"
           />
-          <input
+          <TextField
             value={contents}
             onChange={(e) => setContents(e.target.value)}
             placeholder="내용"
+            variant="outlined"
+            label="내용"
           />
         </div>
       )}
