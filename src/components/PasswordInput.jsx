@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { editTodo, removeTodo } from "../redux/modules/todoSlice";
 import axios from "axios";
 import { Button, TextField } from "@mui/material";
+import { CurrentTimer } from "./CurrentTimer";
 
 const PasswordInput = ({ todo }) => {
   const [password, setPassword] = useState("");
@@ -10,6 +11,7 @@ const PasswordInput = ({ todo }) => {
 
   const [title, setTitle] = useState("");
   const [contents, setContents] = useState("");
+  const [timer, setTimer] = useState("0");
 
   const dispatch = useDispatch();
   const handlePasswordChange = (e) => {
@@ -36,13 +38,24 @@ const PasswordInput = ({ todo }) => {
     //   })
     // );
 
-    axios.patch(`http://localhost:3001/todos/${todo.id}`, {
-      id: todo.id,
-      writer: todo.writer,
-      title: title,
-      contents: contents,
-      password: todo.password,
-    });
+    setTimer(CurrentTimer());
+    // 수정기능
+    if (!contents || !title) {
+      alert("값이 비었습니다!");
+      return;
+    }
+    if (window.confirm("수정하시겠습니까?")) {
+      axios.patch(`http://localhost:3001/todos/${todo.id}`, {
+        id: todo.id,
+        writer: todo.writer,
+        title: title,
+        contents: contents,
+        password: todo.password,
+        timer: timer,
+      });
+      setTitle("");
+      setContents("");
+    }
   };
   const handleRemoveTodo = () => {
     if (window.confirm("삭제하시겠습니까?")) {
@@ -55,6 +68,7 @@ const PasswordInput = ({ todo }) => {
     e.preventDefault();
 
     handlePasswordSubmit();
+
     setPassword("");
   };
 

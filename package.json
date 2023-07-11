@@ -5,11 +5,13 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@material-ui/styles": "^4.11.5",
     "@mui/material": "^5.13.7",
     "@reduxjs/toolkit": "^1.9.5",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "add": "^2.0.6",
     "axios": "^1.4.0",
     "cross-env": "^7.0.3",
     "json-server": "^0.17.3",
@@ -22,7 +24,8 @@
     "shortid": "^2.2.16",
     "styled-components": "^6.0.2",
     "tap": "^16.3.7",
-    "web-vitals": "^2.1.0"
+    "web-vitals": "^2.1.0",
+    "yarn": "^1.22.19"
   },
   "scripts": {
     "start": "react-scripts start",

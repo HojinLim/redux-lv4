@@ -3,7 +3,7 @@ import EveryButton from "../components/EveryButton";
 import { removeTodo } from "../redux/modules/todoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PasswordInput from "../components/PasswordInput";
-import { Container } from "@mui/material";
+import { Container, Paper } from "@mui/material";
 import axios from "axios";
 
 const List = () => {
@@ -25,17 +25,20 @@ const List = () => {
       <EveryButton />
       {todos.map((todo) => (
         <Container maxWidth="sm">
-          <div key={todo.id}>
-            <h3>제목: {todo.title}</h3>
-            <p>id: {todo.id}</p>
-            <p>작성자: {todo.writer}</p>
-            <p>내용: {todo.contents}</p>
-            <div>
-              <PasswordInput todo={todo} />
-              <br />
-              <br />
+          <Paper elevation={3} style={{ padding: "1rem", margin: "15px" }}>
+            <div key={todo.id}>
+              <h3>제목: {todo.title}</h3>
+              {/* <p>id: {todo.id}</p> */}
+              <p>작성일시: {todo.timer}</p>
+              <p>작성자: {todo.writer}</p>
+              <p>내용: {todo.contents}</p>
+              <div>
+                <PasswordInput todo={todo} />
+                <br />
+                <br />
+              </div>
             </div>
-          </div>
+          </Paper>
         </Container>
       ))}
     </>

@@ -5,8 +5,10 @@ import { styled } from "styled-components";
 const EveryButton = () => {
   const navigate = useNavigate();
   return (
+    
     <Container>
-      EveryButton
+      <span class="material-symbols-outlined">home</span>
+     
       <ToHome
         onClick={function(){
           navigate("/");

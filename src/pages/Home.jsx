@@ -3,7 +3,7 @@ import Header from "../components/ui/Header";
 import Footer from "../components/ui/Footer";
 import { useNavigate } from "react-router-dom";
 import EveryButton from "../components/EveryButton";
-import { Button } from "@mui/material";
+import { Button, Container } from "@mui/material";
 import axios from "axios";
 
 const Home = () => {
@@ -15,31 +15,20 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <>
+      <Header />
       <EveryButton />
-
-      <div>
+      <Container maxWidth="sm">
+        
         <h1>무엇을 할까요?</h1>
         <Button
           variant="contained"
-          onClick={function () {
+          onClick={() => {
             navigate("/form");
           }}
         >
           할 일 기록하기
         </Button>
-
-        <Button
-          variant="contained"
-          onClick={() => {
-            fetchTodos();
-
-          
-          }}
-        >
-          axios
-        </Button>
-
         <Button
           variant="contained"
           onClick={() => {
@@ -48,9 +37,9 @@ const Home = () => {
         >
           TODO LIST
         </Button>
-      </div>
+      </Container>
       <Footer />
-    </div>
+    </>
   );
 };
 
