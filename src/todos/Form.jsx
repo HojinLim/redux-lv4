@@ -8,6 +8,7 @@ import { Button, Container, Paper, TextField } from "@mui/material";
 import axios from "axios";
 import shortid from "shortid";
 import { CurrentTimer } from "../components/CurrentTimer";
+import Footer from "../components/ui/Footer";
 
 const Form = () => {
   const [writer, setWriter] = useState("");
@@ -154,6 +155,7 @@ const Form = () => {
             </Button>
           </form>
         </Paper>
+        <Footer />
       </Container>
     </>
   );

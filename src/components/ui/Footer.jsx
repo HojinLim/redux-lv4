@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
 
 const Footer = () => {
   return (
-    <div style={{backgroundColor: "#537356"}}>Footer</div>
-  )
-}
+    <div style={{ backgroundColor: "#537356", height: "100px" }}>
+      Footer
+      <p style={{ textAlign: "end ", padding: "15px" }}>
+        CopyRight by Hojin
+      </p>
+    </div>
+  );
+};
 
-export default Footer
+export default Footer;

@@ -1,29 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import EveryButton from "../components/EveryButton";
 import { removeTodo } from "../redux/modules/todoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PasswordInput from "../components/PasswordInput";
 import { Container, Paper } from "@mui/material";
 import axios from "axios";
+import Footer from "../components/ui/Footer";
+import { useQuery } from "react-query";
+import { getTodos } from "../api/todos";
 
-const List = () => {
-  // const todos = useSelector((state) => state.todo);
+const List = ({ isActive }) => {
+  const [res, setRes] = useState();
+
+  const SERVER_URI = process.env.REACT_APP_SERVER_URI;
 
   const [todos, setTodos] = useState([{}]);
 
-  const fetchTodos = async () => {
-    const { data } = await axios.get("http://localhost:3001/todos");
+  const { data, isLoading, error } = useQuery("todos", async () => {
+    const response = await axios.get(SERVER_URI);
+    return response.data;
+  });
 
-    setTodos(data); // 서버로부터 fetching한 데이터를 useState의 state로 set 합니다.
-    //return {data}
-  };
-  // const todos2= fetchTodos()
-  fetchTodos();
+  // useQuery 관련
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <>
       <EveryButton />
-      {todos.map((todo) => (
+      {data.map((todo) => (
         <Container maxWidth="sm">
           <Paper elevation={3} style={{ padding: "1rem", margin: "15px" }}>
             <div key={todo.id}>
@@ -41,8 +51,37 @@ const List = () => {
           </Paper>
         </Container>
       ))}
+
+      <Footer />
     </>
   );
 };
 
 export default List;
+
+// {todos.map((todo) => (
+//   <Container maxWidth="sm">
+//     <Paper elevation={3} style={{ padding: "1rem", margin: "15px" }}>
+//       <div key={todo.id}>
+//         <h3>제목: {todo.title}</h3>
+//         {/* <p>id: {todo.id}</p> */}
+//         <p>작성일시: {todo.timer}</p>
+//         <p>작성자: {todo.writer}</p>
+//         <p>내용: {todo.contents}</p>
+//         <div>
+//           <PasswordInput todo={todo} />
+//           <br />
+//           <br />
+//         </div>
+//       </div>
+//     </Paper>
+//   </Container>
+// ))}
+
+// const todos = useSelector((state) => state.todo);
+// const getTodos = async () => {
+//   const response = await axios.get(SERVER_URI);
+//   //  const response = await fetch('/api/todos');
+
+//   return response;
+// };
