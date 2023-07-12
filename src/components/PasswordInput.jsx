@@ -2,8 +2,11 @@ import React, { Children, useState } from "react";
 import { useDispatch } from "react-redux";
 import { editTodo, removeTodo } from "../redux/modules/todoSlice";
 import axios from "axios";
-import { Button, TextField } from "@mui/material";
+import { Button, IconButton, TextField, Tooltip } from "@mui/material";
 import { CurrentTimer } from "./CurrentTimer";
+import { SvgIcon } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 const PasswordInput = ({ todo }) => {
   const [password, setPassword] = useState("");
@@ -71,6 +74,13 @@ const PasswordInput = ({ todo }) => {
 
     setPassword("");
   };
+//   function DeleteIcon(props) {
+//     return (
+//       <SvgIcon {...props}>
+//               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+//      </SvgIcon>
+//     );
+// }
 
   return (
     <>
@@ -98,12 +108,20 @@ const PasswordInput = ({ todo }) => {
       )}
       {editMode && (
         <div>
-          <Button type="submit" variant="contained" onClick={handleRemoveTodo}>
-            삭제
-          </Button>
-          <Button type="submit" variant="contained" onClick={handleEditTodo}>
-            수정
-          </Button>
+          <Tooltip title="Delete">
+            <IconButton onClick={handleRemoveTodo}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+          
+
+          <Tooltip title="Edit">
+            <IconButton onClick={handleEditTodo}>
+              <ModeEditIcon />
+            </IconButton>
+          </Tooltip>
+
+        
           <br />
 
           <br />

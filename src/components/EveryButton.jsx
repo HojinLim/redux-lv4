@@ -1,36 +1,29 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
+import HomeIcon from "@mui/icons-material/Home";
+import { IconButton, Tooltip } from "@mui/material";
 
 const EveryButton = () => {
   const navigate = useNavigate();
   return (
-    
     <Container>
-      <span class="material-symbols-outlined">home</span>
-     
-      <ToHome
-        onClick={function(){
-          navigate("/");
-        }}
-      >
-      
-        HOME
-      </ToHome>
+
+
+      <Tooltip title="Home">
+        <IconButton
+          onClick={function () {
+            navigate("/");
+          }}
+        >
+          <HomeIcon />
+        </IconButton>
+      </Tooltip>
     </Container>
   );
 };
-const Container= styled.div `
-    background-color: #35c98e;
-`
-
-const ToHome = styled.button`
-  background-color: blue;
-  color: white;
-  font-size: 16px;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
+const Container = styled.div`
+  background-color: #35c98e;
 `;
 
 export default EveryButton;

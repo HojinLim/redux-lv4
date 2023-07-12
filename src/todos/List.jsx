@@ -3,7 +3,14 @@ import EveryButton from "../components/EveryButton";
 import { removeTodo } from "../redux/modules/todoSlice";
 import { useDispatch, useSelector } from "react-redux";
 import PasswordInput from "../components/PasswordInput";
-import { Container, Paper } from "@mui/material";
+import {
+  Backdrop,
+  Button,
+  CircularProgress,
+  Container,
+  Paper,
+  SwipeableDrawer,
+} from "@mui/material";
 import axios from "axios";
 import Footer from "../components/ui/Footer";
 import { useQuery } from "react-query";
@@ -18,12 +25,18 @@ const List = ({ isActive }) => {
 
   const { data, isLoading, error } = useQuery("todos", async () => {
     const response = await axios.get(SERVER_URI);
+
     return response.data;
   });
 
   // useQuery 관련
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        Loading...
+        <CircularProgress />
+      </div>
+    );
   }
 
   if (error) {
