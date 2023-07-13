@@ -9,6 +9,7 @@ const Main = () => {
       <Container maxWidth="sm">
         <h1>무엇을 할까요?</h1>
         <Button
+          size="large"
           variant="contained"
           onClick={() => {
             navigate("/form");
@@ -17,6 +18,7 @@ const Main = () => {
           할 일 기록하기
         </Button>
         <Button
+          size="large"
           variant="contained"
           onClick={() => {
             navigate("/list");

@@ -4,9 +4,11 @@ import { editTodo, removeTodo } from "../redux/modules/todoSlice";
 import axios from "axios";
 import { Button, IconButton, TextField, Tooltip } from "@mui/material";
 import { CurrentTimer } from "./CurrentTimer";
-import { SvgIcon } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { SvgIcon } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import { useMutation, useQueryClient } from "react-query";
+import { deleteTodo } from "../api/todos";
 
 const PasswordInput = ({ todo }) => {
   const [password, setPassword] = useState("");
@@ -16,7 +18,8 @@ const PasswordInput = ({ todo }) => {
   const [contents, setContents] = useState("");
   const [timer, setTimer] = useState("0");
 
-  const dispatch = useDispatch();
+  const queryClient = useQueryClient();
+
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
   };
@@ -30,42 +33,52 @@ const PasswordInput = ({ todo }) => {
     }
   };
 
+  // Todo 수정
+  const editMutation = useMutation(editTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+    },
+  });
   const handleEditTodo = () => {
-    // dispatch(
-    //   editTodo({
-    //     id: todo.id,
-    //     writer: todo.writer,
-    //     title: title,
-    //     contents: contents,
-    //     password: todo.password,
-    //   })
-    // );
-
     setTimer(CurrentTimer());
-    // 수정기능
+
     if (!contents || !title) {
       alert("값이 비었습니다!");
       return;
     }
     if (window.confirm("수정하시겠습니까?")) {
-      axios.patch(`http://localhost:3001/todos/${todo.id}`, {
-        id: todo.id,
-        writer: todo.writer,
+      const updatedTodo = {
+        ...todo,
+        timer: timer,
         title: title,
         contents: contents,
-        password: todo.password,
-        timer: timer,
-      });
+        isDone: !todo.isDone,
+      };
+      editMutation.mutate(updatedTodo);
       setTitle("");
       setContents("");
     }
   };
-  const handleRemoveTodo = () => {
+
+  // Todo 삭제
+  const deleteMutation = useMutation(deleteTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+    },
+  });
+  const handleDelete = () => {
     if (window.confirm("삭제하시겠습니까?")) {
-      // dispatch(removeTodo(todo.id));
-      axios.delete(`http://localhost:3001/todos/${todo.id}`);
+      deleteMutation.mutate(todo.id);
     }
   };
+
+  if (deleteMutation.isLoading) {
+    // 삭제 중일 때 표시할 로딩 상태 처리
+  }
+
+  if (deleteMutation.isError) {
+    // 오류 발생 시 표시할 오류 상태 처리
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -74,13 +87,6 @@ const PasswordInput = ({ todo }) => {
 
     setPassword("");
   };
-//   function DeleteIcon(props) {
-//     return (
-//       <SvgIcon {...props}>
-//               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
-//      </SvgIcon>
-//     );
-// }
 
   return (
     <>
@@ -109,11 +115,10 @@ const PasswordInput = ({ todo }) => {
       {editMode && (
         <div>
           <Tooltip title="Delete">
-            <IconButton onClick={handleRemoveTodo}>
+            <IconButton onClick={handleDelete}>
               <DeleteIcon />
             </IconButton>
           </Tooltip>
-          
 
           <Tooltip title="Edit">
             <IconButton onClick={handleEditTodo}>
@@ -121,7 +126,6 @@ const PasswordInput = ({ todo }) => {
             </IconButton>
           </Tooltip>
 
-        
           <br />
 
           <br />
@@ -146,3 +150,13 @@ const PasswordInput = ({ todo }) => {
 };
 
 export default PasswordInput;
+
+// dispatch(
+//   editTodo({
+//     id: todo.id,
+//     writer: todo.writer,
+//     title: title,
+//     contents: contents,
+//     password: todo.password,
+//   })
+// );

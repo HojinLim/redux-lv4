@@ -2,59 +2,60 @@ import React, { useEffect, useState } from "react";
 import EveryButton from "../components/EveryButton";
 import { useDispatch, useSelector } from "react-redux";
 
-import { addTodo } from "../redux/modules/todoSlice";
 import { useNavigate } from "react-router-dom";
-import { Button, Container, Paper, TextField } from "@mui/material";
+import { Button, Container, Paper, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import shortid from "shortid";
 import { CurrentTimer } from "../components/CurrentTimer";
 import Footer from "../components/ui/Footer";
+import { QueryClient, useMutation, useQueryClient } from "react-query";
+import { addTodo } from "../api/todos";
+import useInput from "../hooks/useInput";
 
 const Form = () => {
-  const [writer, setWriter] = useState("");
-  const [title, setTitle] = useState("");
-  const [contents, setContents] = useState("");
-  const [password, setPassword] = useState("");
+  // 커스텀 훅 사용
+  const [writer, onChangeWriterHandler, writerReset] = useInput("");
+  const [title, onChangeTitleHandler, titleReset] = useInput("");
+  const [contents, onChangeContentsHandler, contentsReset] = useInput("");
+  const [password, onChangePasswordHandler, passwordReset] = useInput("");
 
   const [timer, setTimer] = useState("0");
 
   const navigate = useNavigate();
 
-  const dispatch = useDispatch();
-  //const todos = useSelector((state) => state.todo);
-  const [todo, setTodo] = useState({});
-
-  const onSubmitHandler = async () => {
-    const id = shortid.generate();
-    setTimer(CurrentTimer());
-    await axios.post("http://localhost:3001/todos", {
-      writer,
-      title,
-      contents,
-      password,
-      id,
-      timer,
-    });
-  };
   useEffect(() => {
     setTimer(CurrentTimer());
   }, []);
 
-  const handleWriteButtonClick = (e) => {
+  // 할 일 추가
+  const queryClient = useQueryClient();
+  const addMutation = useMutation(addTodo, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("todos");
+    },
+  });
+
+  const handleAddButtonClick = (e) => {
     e.preventDefault();
 
-    try {
-      onSubmitHandler();
+    if (validation()) {
+      const id = shortid.generate();
+      const newTodo = {
+        writer,
+        title,
+        contents,
+        password,
+        id,
+        timer,
+        isDone: false,
+      };
+      addMutation.mutate(newTodo);
 
-      //dispatch(addTodo({ writer, title, contents }));
-
-      if (validation()) {
-        alert("성공");
-        navigate("/list");
-      } else {
-        alert("실패");
-      }
-    } catch {}
+      alert("성공");
+      navigate("/list");
+    } else {
+      alert("실패");
+    }
   };
 
   const validation = function () {
@@ -62,7 +63,8 @@ const Form = () => {
       alert("이름을 2글자 이상 작성해주세요!");
       init();
       return false;
-    } else if (title.length < 1) {
+     } 
+     else if (title.length < 1) {
       alert("제목을 1글자 이상 작성해주세요!");
       init();
       return false;
@@ -78,19 +80,23 @@ const Form = () => {
     return true;
   };
   function init() {
-    setContents("");
-    setTitle("");
-    setWriter("");
-    setPassword("");
+    writerReset();
+    titleReset();
+    contentsReset();
+    passwordReset();
+    
   }
 
   return (
     <>
       <EveryButton />
 
+      <Typography style={{ margin: "15px" }} variant="h3" component="h4">
+        ✍️ 할 일 적어봐요
+      </Typography>
       <Container maxWidth="sm">
         <Paper elevation={3} style={{ padding: "1rem", margin: "20px" }}>
-          <form onSubmit={handleWriteButtonClick}>
+          <form onSubmit={handleAddButtonClick}>
             <div>
               <h2>작성자</h2>
 
@@ -99,35 +105,36 @@ const Form = () => {
                 label="작성자"
                 variant="outlined"
                 value={writer}
-                placeholder="이름 입력 (2자 이상)"
-                onChange={(e) => {
-                  setWriter(e.target.value);
+                inputProps={{
+                  maxLength: 10,
                 }}
+                placeholder="이름 입력 (2자 이상)"
+                onChange={onChangeWriterHandler}
               ></TextField>
             </div>
             <div>
               <h2>제목</h2>
               <TextField
+                inputProps={{
+                  maxLength: 15,
+                }}
                 id="outlined-basic"
                 label="제목"
                 variant="outlined"
                 value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
+                onChange={onChangeTitleHandler}
                 placeholder="제목 입력(1자 이상) "
               ></TextField>
             </div>
             <div>
               <h2>내용</h2>
               <TextField
-                id="outlined-basic"
                 label="내용"
-                variant="outlined"
                 value={contents}
-                onChange={(e) => {
-                  setContents(e.target.value);
-                }}
+                onChange={onChangeContentsHandler}
+                id="outlined-multiline-flexible"
+                multiline={true}
+                maxRows={4}
                 placeholder="내용 입력 (2자 이상)"
               ></TextField>
             </div>
@@ -142,9 +149,7 @@ const Form = () => {
                   maxLength: 4,
                 }}
                 value={password}
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
+                onChange={onChangePasswordHandler}
                 placeholder="비밀번호 입력 (4자리)"
               ></TextField>
             </div>

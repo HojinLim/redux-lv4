@@ -10,6 +10,7 @@ const initialState = [
     title: "리액트1",
     contents: "리액트 공부하기1",
     password: "1234",
+    isDone: false
   },
   {
     id: shortid.generate(),
@@ -17,6 +18,7 @@ const initialState = [
     title: "운동하기",
     contents: "러닝",
     password: "4321",
+    isDone: true
   },
 ];
 
@@ -39,7 +41,7 @@ const todoSlice = createSlice({
 
     editTodo: (state, action) => {
       const { id, title, contents } = action.payload;
-    
+
       return state.map((todo) => {
         if (todo.id === id) {
           return {
@@ -51,9 +53,18 @@ const todoSlice = createSlice({
         return todo;
       });
     },
+    switchTodo: (state, action) => {
+      return state.map((todo) => {
+        if (todo.id === action.payload) {
+          return { ...todo, isDone: !todo.isDone };
+        } else {
+          return todo;
+        }
+      });
+    },
   },
 });
 // 액션크리에이터는 컴포넌트에서 사용하기 위해 export 하고
-export const { addTodo, removeTodo, editTodo } = todoSlice.actions;
+export const {  removeTodo, editTodo } = todoSlice.actions;
 // reducer 는 configStore에 등록하기 위해 export default 합니다.
 export default todoSlice.reducer;

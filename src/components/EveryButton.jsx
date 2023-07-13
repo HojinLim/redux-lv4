@@ -16,7 +16,7 @@ const EveryButton = () => {
             navigate("/");
           }}
         >
-          <HomeIcon />
+          <HomeIcon fontSize="large"   />
         </IconButton>
       </Tooltip>
     </Container>

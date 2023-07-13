@@ -1,5 +1,17 @@
 import React from "react";
 
+
+/**
+ * 현재 시간을 반환해주는 함수
+ * @param {_}
+ * @returns 현재 시간을 string형식으로 합쳐서 반환
+ */
+
+/**
+ * 현재 시간을 알려줌
+ * @param {*} 
+ * @returns ㄹ
+ */
 export const CurrentTimer = () => {
   const date = new Date();
   const year = String(date.getFullYear()).slice(2);
@@ -10,3 +22,4 @@ export const CurrentTimer = () => {
   const seconds = String(date.getSeconds()).padStart(2, "0");
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 };
+
